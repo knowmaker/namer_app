@@ -15,6 +15,14 @@ class ControlScreenState extends State<ControlScreen> {
     'lighting': false,
   };
 
+  String lastUpdate = "Никогда";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchControlState();
+  }
+
   Future<void> fetchControlState() async {
     final url = Uri.parse('http://alexandergh2023.tplinkdns.com/api/st/get');
     try {
@@ -28,6 +36,10 @@ class ControlScreenState extends State<ControlScreen> {
             'watering2': data['wSt2'] == 1,
             'lighting': data['lSt'] == 1,
           };
+          // Обновляем дату последнего обновления
+          final now = DateTime.now();
+          lastUpdate =
+              "${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
         });
       } else {
         print('Failed to fetch control state: ${response.statusCode}');
@@ -52,25 +64,39 @@ class ControlScreenState extends State<ControlScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    fetchControlState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: fetchControlState,
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        padding: EdgeInsets.all(16.0),
+      child: Column(
         children: [
-          buildControlCard('Проветривание', 'ventilation', Icons.air),
-          buildControlCard('Полив 1', 'watering1', Icons.opacity),
-          buildControlCard('Полив 2', 'watering2', Icons.opacity_outlined),
-          buildControlCard('Освещение', 'lighting', Icons.lightbulb),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Последнее обновление: $lastUpdate',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              padding: EdgeInsets.all(16.0),
+              children: [
+                buildControlCard('Проветривание', 'ventilation', Icons.air),
+                buildControlCard('Полив 1', 'watering1', Icons.opacity),
+                buildControlCard('Полив 2', 'watering2', Icons.opacity_outlined),
+                buildControlCard('Освещение', 'lighting', Icons.lightbulb),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -18,6 +18,8 @@ class SensorScreenState extends State<SensorScreen> {
     'level': 0,
   };
 
+  String lastUpdate = "Никогда";
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,10 @@ class SensorScreenState extends State<SensorScreen> {
             'light': data['l'],
             'level': data['lev'],
           };
+          // Обновляем дату последнего обновления
+          final now = DateTime.now();
+          lastUpdate =
+              "${now.day.toString().padLeft(2, '0')}.${now.month.toString().padLeft(2, '0')}.${now.year} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
         });
       } else {
         print('Failed to load sensor data: ${response.statusCode}');
@@ -53,19 +59,42 @@ class SensorScreenState extends State<SensorScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: fetchSensorData,
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        padding: EdgeInsets.all(16.0),
+      child: Column(
         children: [
-          buildSensorCard('Температура воздуха', sensorData['airT'], '°C'),
-          buildSensorCard('Влажность воздуха', sensorData['airH'], '%'),
-          buildSensorCard('Влажность почвы грядки 1', sensorData['soilM1'], '%'),
-          buildSensorCard('Влажность почвы грядки 2', sensorData['soilM2'], '%'),
-          buildSensorCard('Температура воды', sensorData['waterT'], '°C'),
-          buildSensorCard('Уровень воды', sensorData['level'], '%'),
-          buildSensorCard('Освещенность', sensorData['light'], 'Лк'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Последнее обновление: $lastUpdate',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              padding: EdgeInsets.all(16.0),
+              children: [
+                buildSensorCard('Температура воздуха', sensorData['airT'], '°C'),
+                buildSensorCard('Влажность воздуха', sensorData['airH'], '%'),
+                buildSensorCard(
+                    'Влажность почвы грядки 1', sensorData['soilM1'], '%'),
+                buildSensorCard(
+                    'Влажность почвы грядки 2', sensorData['soilM2'], '%'),
+                buildSensorCard(
+                    'Температура воды', sensorData['waterT'], '°C'),
+                buildSensorCard('Уровень воды', sensorData['level'], '%'),
+                buildSensorCard('Освещенность', sensorData['light'], 'Лк'),
+              ],
+            ),
+          ),
         ],
       ),
     );
