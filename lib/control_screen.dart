@@ -91,8 +91,8 @@ class ControlScreenState extends State<ControlScreen> {
               padding: EdgeInsets.all(16.0),
               children: [
                 buildControlCard('Проветривание', 'ventilation', Icons.air),
-                buildControlCard('Полив 1', 'watering1', Icons.opacity),
-                buildControlCard('Полив 2', 'watering2', Icons.opacity_outlined),
+                buildControlCard('Полив грядки 1', 'watering1', Icons.opacity),
+                buildControlCard('Полив грядки 2', 'watering2', Icons.opacity),
                 buildControlCard('Освещение', 'lighting', Icons.lightbulb),
               ],
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'sensor_screen.dart';
 import 'control_screen.dart';
 import 'settings_screen.dart';
+import 'login_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -49,8 +50,10 @@ class MainScreenState extends State<MainScreen> {
           IconButton(
             icon: Icon(Icons.account_circle, size: 30),
             onPressed: () {
-              // Логика для перехода к профилю пользователя или другой функции
-              print("Иконка пользователя нажата");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
             },
           ),
         ],
