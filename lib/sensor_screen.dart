@@ -51,47 +51,23 @@ class SensorScreenState extends State<SensorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          color: Colors.green[100],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Показания датчиков',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.green[800],
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.refresh, color: Colors.green[800]),
-                onPressed: fetchSensorData,
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            padding: EdgeInsets.all(16.0),
-            children: [
-              buildSensorCard('Температура воздуха', sensorData['airT'], '°C'),
-              buildSensorCard('Влажность воздуха', sensorData['airH'], '%'),
-              buildSensorCard('Влажность почвы грядки 1', sensorData['soilM1'], '%'),
-              buildSensorCard('Влажность почвы грядки 2', sensorData['soilM2'], '%'),
-              buildSensorCard('Температура воды', sensorData['waterT'], '°C'),
-              buildSensorCard('Уровень воды', sensorData['level'], '%'),
-              buildSensorCard('Освещенность', sensorData['light'], 'Лк'),
-            ],
-          ),
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: fetchSensorData,
+      child: GridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        padding: EdgeInsets.all(16.0),
+        children: [
+          buildSensorCard('Температура воздуха', sensorData['airT'], '°C'),
+          buildSensorCard('Влажность воздуха', sensorData['airH'], '%'),
+          buildSensorCard('Влажность почвы грядки 1', sensorData['soilM1'], '%'),
+          buildSensorCard('Влажность почвы грядки 2', sensorData['soilM2'], '%'),
+          buildSensorCard('Температура воды', sensorData['waterT'], '°C'),
+          buildSensorCard('Уровень воды', sensorData['level'], '%'),
+          buildSensorCard('Освещенность', sensorData['light'], 'Лк'),
+        ],
+      ),
     );
   }
 

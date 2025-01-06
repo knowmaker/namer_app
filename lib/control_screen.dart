@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ControlScreen extends StatefulWidget {
   @override
@@ -13,6 +14,28 @@ class ControlScreenState extends State<ControlScreen> {
     'watering2': false,
     'lighting': false,
   };
+
+  Future<void> fetchControlState() async {
+    final url = Uri.parse('http://alexandergh2023.tplinkdns.com/api/st/get');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          controlState = {
+            'ventilation': data['vSt'] == 1,
+            'watering1': data['wSt1'] == 1,
+            'watering2': data['wSt2'] == 1,
+            'lighting': data['lSt'] == 1,
+          };
+        });
+      } else {
+        print('Failed to fetch control state: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching control state: $e');
+    }
+  }
 
   Future<void> updateControlState(String controlName, bool state) async {
     final url = Uri.parse('http://alexandergh2023.tplinkdns.com/api/c/$controlName/${state ? '1' : '0'}');
@@ -29,36 +52,27 @@ class ControlScreenState extends State<ControlScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchControlState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          color: Colors.purple[100],
-          child: Text(
-            'Управление',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple[800],
-            ),
-          ),
-        ),
-        Expanded(
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            padding: EdgeInsets.all(16.0),
-            children: [
-              buildControlCard('Проветривание', 'ventilation', Icons.air),
-              buildControlCard('Полив 1', 'watering1', Icons.opacity),
-              buildControlCard('Полив 2', 'watering2', Icons.opacity_outlined),
-              buildControlCard('Освещение', 'lighting', Icons.lightbulb),
-            ],
-          ),
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: fetchControlState,
+      child: GridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        padding: EdgeInsets.all(16.0),
+        children: [
+          buildControlCard('Проветривание', 'ventilation', Icons.air),
+          buildControlCard('Полив 1', 'watering1', Icons.opacity),
+          buildControlCard('Полив 2', 'watering2', Icons.opacity_outlined),
+          buildControlCard('Освещение', 'lighting', Icons.lightbulb),
+        ],
+      ),
     );
   }
 
