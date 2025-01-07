@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'sensor_screen.dart';
 import 'control_screen.dart';
 import 'settings_screen.dart';
 import 'login_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Умная Теплица',
       theme: ThemeData(
         primarySwatch: Colors.green,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green).copyWith(secondary: Colors.greenAccent),
       ),
       home: MainScreen(),
     );

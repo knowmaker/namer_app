@@ -134,6 +134,10 @@ class ControlScreenState extends State<ControlScreen> {
             SizedBox(height: 8),
             Switch(
               value: controlState[controlName] ?? false,
+              activeColor: Colors.white, // Цвет ползунка, когда включён
+              activeTrackColor: Colors.green, // Цвет трека, когда включён
+              inactiveThumbColor: Colors.grey, // Цвет ползунка, когда выключен
+              inactiveTrackColor: Colors.grey.shade300, // Цвет трека, когда выключен
               onChanged: (bool value) {
                 setState(() {
                   controlState[controlName] = value;

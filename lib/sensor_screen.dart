@@ -59,6 +59,7 @@ class SensorScreenState extends State<SensorScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: fetchSensorData,
+      color: Colors.purple,
       child: Column(
         children: [
           Padding(
