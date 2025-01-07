@@ -83,16 +83,19 @@ class SensorScreenState extends State<SensorScreen> {
               mainAxisSpacing: 12,
               padding: EdgeInsets.all(16.0),
               children: [
-                buildSensorCard('Температура воздуха', sensorData['airT'], '°C'),
-                buildSensorCard('Влажность воздуха', sensorData['airH'], '%'),
                 buildSensorCard(
-                    'Влажность почвы грядки 1', sensorData['soilM1'], '%'),
+                    'Температура воздуха', sensorData['airT'], '°C', Icons.thermostat),
                 buildSensorCard(
-                    'Влажность почвы грядки 2', sensorData['soilM2'], '%'),
+                    'Влажность воздуха', sensorData['airH'], '%', Icons.water_drop),
                 buildSensorCard(
-                    'Температура воды', sensorData['waterT'], '°C'),
-                buildSensorCard('Уровень воды', sensorData['level'], '%'),
-                buildSensorCard('Освещенность', sensorData['light'], 'Лк'),
+                    'Влажность почвы грядки 1', sensorData['soilM1'], '%', Icons.grass),
+                buildSensorCard(
+                    'Влажность почвы грядки 2', sensorData['soilM2'], '%', Icons.grass),
+                buildSensorCard(
+                    'Температура\nводы', sensorData['waterT'], '°C', Icons.opacity),
+                buildSensorCard(
+                    'Уровень\nводы', sensorData['level'], '/ 3', Icons.water),
+                buildLightSensorCard('Освещенность', sensorData['light']),
               ],
             ),
           ),
@@ -101,7 +104,7 @@ class SensorScreenState extends State<SensorScreen> {
     );
   }
 
-  Widget buildSensorCard(String title, dynamic value, String unit) {
+  Widget buildSensorCard(String title, dynamic value, String unit, IconData icon) {
     return Card(
       elevation: 6,
       shape: RoundedRectangleBorder(
@@ -120,6 +123,12 @@ class SensorScreenState extends State<SensorScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Icon(
+                icon,
+                size: 48,
+                color: Colors.white,
+              ),
+              SizedBox(height: 8),
               Text(
                 title,
                 style: TextStyle(
@@ -132,6 +141,59 @@ class SensorScreenState extends State<SensorScreen> {
               SizedBox(height: 8),
               Text(
                 '$value $unit',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLightSensorCard(String title, int lightValue) {
+    IconData icon = lightValue == 0 ? Icons.wb_sunny : Icons.nights_stay;
+    String label = lightValue == 0 ? 'Светло' : 'Темно';
+
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green[300]!, Colors.green[500]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 48,
+                color: Colors.white,
+              ),
+              SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Text(
+                label,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
